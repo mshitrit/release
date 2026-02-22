@@ -39,16 +39,6 @@ tests:
       OPERATOR_NAMESPACE: sbr-install
       OPERATOR_RELEASED_VERSION: 0.0.25
     test:
-    - as: set-odf-on-cluster
-      cli: latest
-      commands: |
-        make setup-odf-storage
-        make run-setup-odf-storage-retry
-      from: src
-      resources:
-        requests:
-          cpu: 100m
-          memory: 200Mi
     - as: install-last-operator-version
       cli: latest
       commands: |
@@ -63,6 +53,21 @@ tests:
       env:
       - name: OPERATOR_NAMESPACE
       - name: OPERATOR_RELEASED_VERSION
+      from: src
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+    - as: set-odf-on-cluster
+      cli: latest
+      commands: |
+        # Force ODF setup binary to use test-cluster admin kubeconfig (it prefers
+        # InClusterConfig() otherwise, which may not have namespace create permission).
+        export KUBECONFIG="${SHARED_DIR}/kubeconfig"
+        unset KUBERNETES_SERVICE_HOST KUBERNETES_SERVICE_PORT
+
+        make setup-odf-storage
+        make run-setup-odf-storage-retry
       from: src
       resources:
         requests:
