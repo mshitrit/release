@@ -17,7 +17,7 @@ operator:
     skip_building_index: true
   substitutions:
   - pullspec: quay.io/medik8s/sbd-operator:.*
-    with: pipeline:sbd-operator
+    with: pipeline:storage-based-remediation
 releases:
   latest:
     candidate:
@@ -59,7 +59,7 @@ tests:
         oc label --overwrite ns "$OPERATOR_NAMESPACE" pod-security.kubernetes.io/enforce=privileged
 
         # OPERATOR_NAMESPACE variable is used by bundle-run and bundle-run-update
-        BUNDLE_IMG=quay.io/repository/medik8s/sbd-operator-bundle:v"$OPERATOR_RELEASED_VERSION" make bundle-run
+        BUNDLE_IMG=quay.io/medik8s/sbd-operator-bundle:v"$OPERATOR_RELEASED_VERSION" make bundle-run
       env:
       - name: OPERATOR_NAMESPACE
       - name: OPERATOR_RELEASED_VERSION
