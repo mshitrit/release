@@ -23,7 +23,7 @@ releases:
     candidate:
       product: ocp
       stream: ci
-      version: "4.21"
+      version: "4.20"
 resources:
   '*':
     requests:
@@ -101,4 +101,4 @@ zz_generated_metadata:
   branch: main
   org: medik8s
   repo: storage-based-remediation
-  variant: "4.21"
+  variant: "4.20"
