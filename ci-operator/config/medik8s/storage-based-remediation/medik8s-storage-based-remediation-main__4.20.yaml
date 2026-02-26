@@ -89,7 +89,9 @@ tests:
           memory: 200Mi
     - as: test-command
       cli: latest
-      commands: export OPERATOR_NS="$OPERATOR_NAMESPACE" && make test-e2e
+      commands: |
+        which kubectl || ln -s "$(which oc)" /usr/local/bin/kubectl
+        export OPERATOR_NS="$OPERATOR_NAMESPACE" && make test-e2e
       env:
       - name: OPERATOR_NAMESPACE
       from: src
