@@ -37,7 +37,7 @@ tests:
     env:
       BASE_DOMAIN: ocp-ci.medik8s-ci.devcluster.openshift.com
       COMPUTE_NODE_TYPE: m5.4xlarge
-      OPERATOR_NAMESPACE: sbr-install
+      OPERATOR_NAMESPACE: sbd-operator-system
       OPERATOR_RELEASED_VERSION: 0.2.0
     test:
     - as: install-last-operator-version
