@@ -18,8 +18,6 @@ operator:
   substitutions:
   - pullspec: quay.io/medik8s/sbd-operator:.*
     with: pipeline:storage-based-remediation
-  - pullspec: quay.io/medik8s/sbd-agent:.*
-    with: pipeline:storage-based-remediation
 releases:
   latest:
     candidate:
