@@ -91,7 +91,7 @@ tests:
       cli: latest
       commands: |
         which kubectl || { mkdir -p /tmp/bin && ln -s "$(which oc)" /tmp/bin/kubectl && export PATH="/tmp/bin:${PATH}"; }
-        export OPERATOR_NS="$OPERATOR_NAMESPACE" && make test-e2e
+        export OPERATOR_NS="$OPERATOR_NAMESPACE" && make test-e2e TEST_HOME="$ARTIFACT_DIR"
       env:
       - name: OPERATOR_NAMESPACE
       from: src
