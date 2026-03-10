@@ -83,7 +83,7 @@ tests:
         # Inject CI-built agent image — only set in CI, non-CI runs fall through to derivation
         oc set env deployment/sbd-operator-controller-manager \
           -n "$OPERATOR_NAMESPACE" \
-          RELATED_IMAGE_SBD_AGENT="pipeline:sbd-agent"
+          RELATED_IMAGE_SBR_AGENT="pipeline:sbd-agent"
       dependencies:
       - env: OO_BUNDLE
         name: my-bundle
