@@ -10,6 +10,8 @@ images:
 - dockerfile_path: Dockerfile
   from: os
   to: storage-based-remediation
+- dockerfile_path: cmd/sbd-agent/Dockerfile
+  to: sbd-agent
 operator:
   bundles:
   - as: my-bundle
@@ -76,7 +78,12 @@ tests:
           memory: 200Mi
     - as: upgrade-operator-latest
       cli: latest
-      commands: BUNDLE_IMG="$OO_BUNDLE" make bundle-run-update
+      commands: |
+        BUNDLE_IMG="$OO_BUNDLE" make bundle-run-update
+        # Inject CI-built agent image — only set in CI, non-CI runs fall through to derivation
+        oc set env deployment/sbd-operator-controller-manager \
+          -n "$OPERATOR_NAMESPACE" \
+          RELATED_IMAGE_SBD_AGENT="pipeline:sbd-agent"
       dependencies:
       - env: OO_BUNDLE
         name: my-bundle
