@@ -80,13 +80,17 @@ tests:
       cli: latest
       commands: |
         BUNDLE_IMG="$OO_BUNDLE" make bundle-run-update
-        # Inject CI-built agent image — only set in CI, non-CI runs fall through to derivation
-        oc set env deployment/sbd-operator-controller-manager \
-          -n "$OPERATOR_NAMESPACE" \
-          RELATED_IMAGE_SBR_AGENT="pipeline:sbd-agent"
+
+        # Both images resolved by CI-operator from pipeline images to full registry URLs
+        echo "Operator image: $SBR_OPERATOR_IMAGE"
+        echo "Resolved agent image: $SBR_AGENT_IMAGE"
       dependencies:
       - env: OO_BUNDLE
         name: my-bundle
+      - env: SBR_OPERATOR_IMAGE
+        name: storage-based-remediation
+      - env: SBR_AGENT_IMAGE
+        name: sbd-agent
       env:
       - name: OPERATOR_NAMESPACE
       from: src
