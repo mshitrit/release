@@ -81,40 +81,18 @@ tests:
       commands: |
         BUNDLE_IMG="$OO_BUNDLE" make bundle-run-update
 
-        # Both images resolved by CI-operator from pipeline images to full registry URLs
-        echo "Operator image: $SBR_OPERATOR_IMAGE"
-        echo "Resolved agent image: $SBR_AGENT_IMAGE"
-
         # Inject CI-built agent image into the CSV so OLM propagates it to the deployment
         CSV_NAME=$(oc get csv -n "$OPERATOR_NAMESPACE" -o jsonpath='{.items[0].metadata.name}')
-        echo "CSV name: $CSV_NAME"
-        GENERATION_BEFORE=$(oc get deployment sbd-operator-controller-manager \
-          -n "$OPERATOR_NAMESPACE" -o jsonpath='{.metadata.generation}')
-        echo "Deployment generation before patch: $GENERATION_BEFORE"
         oc -n "$OPERATOR_NAMESPACE" patch csv "$CSV_NAME" --type=json -p '[
           {"op":"add","path":"/spec/install/spec/deployments/0/spec/template/spec/containers/0/env/-","value":{"name":"RELATED_IMAGE_SBR_AGENT","value":"'"${SBR_AGENT_IMAGE}"'"}}
         ]'
         echo "CSV patched, waiting for OLM to process and trigger rollout..."
         sleep 30
-        GENERATION_AFTER=$(oc get deployment sbd-operator-controller-manager \
-          -n "$OPERATOR_NAMESPACE" -o jsonpath='{.metadata.generation}')
-        echo "Deployment generation after patch: $GENERATION_AFTER"
         oc rollout status deployment/sbd-operator-controller-manager \
           -n "$OPERATOR_NAMESPACE" --timeout=120s
-        echo "Rollout complete — verifying RELATED_IMAGE_SBR_AGENT is set in deployment env"
-        AGENT_ENV=$(oc get deployment sbd-operator-controller-manager \
-          -n "$OPERATOR_NAMESPACE" \
-          -o jsonpath='{.spec.template.spec.containers[0].env}')
-        if echo "$AGENT_ENV" | grep -q "RELATED_IMAGE_SBR_AGENT"; then
-          echo "SUCCESS: RELATED_IMAGE_SBR_AGENT is set in deployment env"
-        else
-          echo "WARNING: RELATED_IMAGE_SBR_AGENT not found in deployment env"
-        fi
       dependencies:
       - env: OO_BUNDLE
         name: my-bundle
-      - env: SBR_OPERATOR_IMAGE
-        name: storage-based-remediation
       - env: SBR_AGENT_IMAGE
         name: sbd-agent
       env:
