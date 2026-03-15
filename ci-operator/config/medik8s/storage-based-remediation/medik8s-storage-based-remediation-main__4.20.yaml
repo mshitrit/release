@@ -107,6 +107,7 @@ tests:
       commands: |
         which kubectl || { mkdir -p /tmp/bin && ln -s "$(which oc)" /tmp/bin/kubectl && export PATH="/tmp/bin:${PATH}"; }
         export OPERATOR_NS="$OPERATOR_NAMESPACE"
+        export AWS_SHARED_CREDENTIALS_FILE="${CLUSTER_PROFILE_DIR}/.awscred"
         make test-e2e && TEST_EXIT_CODE=0 || TEST_EXIT_CODE=$? # TEST_EXIT_CODE=$? always returns true, preventing set -e from aborting the script, while still capturing the real exit code
         echo "--- Copying test artifacts ---"
         echo "Source: .tests/"
